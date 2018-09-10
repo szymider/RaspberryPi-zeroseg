@@ -5,9 +5,7 @@ from datetime import datetime
 
 
 def sleeper(seconds):
-    print("Sleep for {}".format(seconds))
     time.sleep(seconds)
-    print("Wake up")
     timeout_event.set()
 
 

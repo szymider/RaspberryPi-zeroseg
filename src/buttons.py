@@ -2,7 +2,7 @@ import ZeroSeg.led as led
 import time
 import threading
 import RPi.GPIO as GPIO
-import timeScript
+import clock
 
 BUTTON_1 = 17
 BUTTON_2 = 26
