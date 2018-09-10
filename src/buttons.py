@@ -1,21 +1,14 @@
 import ZeroSeg.led as led
+import RPi.GPIO as GPIO
 import time
 import threading
-import RPi.GPIO as GPIO
 import clock
 
-BUTTON_1 = 17
-BUTTON_2 = 26
 
-GPIO.setmode(GPIO.BCM)  # Use BCM GPIO numbers
-GPIO.setup(BUTTON_1, GPIO.IN)
-GPIO.setup(BUTTON_2, GPIO.IN)
-
-
-def initialize(dev, bright):
-    global device, brightness
+def initialize(dev, btn_event):
+    global device, button_event
     device = dev
-    brightness = bright
+    button_event = btn_event
 
 
 # button which controls brightness
@@ -28,14 +21,23 @@ def button_1_listener(source):
     print("Button 1 pressed")
 
 
-# button which control current display mode
+# button which controls current mode
 def button_2_listener(source):
     print("Button 2 pressed")
+    button_event.set()
 
+
+BUTTON_1 = 17
+BUTTON_2 = 26
+
+GPIO.setmode(GPIO.BCM)  # Use BCM GPIO numbers
+GPIO.setup(BUTTON_1, GPIO.IN)
+GPIO.setup(BUTTON_2, GPIO.IN)
 
 GPIO.add_event_detect(BUTTON_1, GPIO.RISING, callback=button_1_listener, bouncetime=200)
 GPIO.add_event_detect(BUTTON_2, GPIO.RISING, callback=button_2_listener, bouncetime=200)
 
+brightness = 3
 device = None
-brightness = None
+button_event = None
 

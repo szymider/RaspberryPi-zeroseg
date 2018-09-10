@@ -1,7 +1,13 @@
 import ZeroSeg.led as led
+from datetime import datetime
 import time
 import threading
-from datetime import datetime
+
+
+def initialize(dev, event):
+    global clock_event, device
+    clock_event = event
+    device = dev
 
 
 def sleeper(seconds):
@@ -9,7 +15,7 @@ def sleeper(seconds):
     timeout_event.set()
 
 
-def display_time(device):
+def display_time():
     now = datetime.now()
     hour = now.hour
     minute = now.minute
@@ -27,12 +33,17 @@ def display_time(device):
     sleeper_thread.start()
 
 
-def clock(device):
-    display_time(device)
-    while True:  # TODO: clock_event
-        timeout_event.wait()
-        timeout_event.clear()
-        display_time(device)
+def clock():
+    display_time()
+    while clock_event.is_set():
+        if timeout_event.is_set():
+            time.sleep(3)
+            timeout_event.clear()
+            display_time()
+        time.sleep(1)
+    print("clock is over")
 
 
+device = None
+clock_event = None
 timeout_event = threading.Event()
