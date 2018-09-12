@@ -5,8 +5,8 @@ import threading
 
 
 def initialize(dev, event):
-    global clock_event, device
-    clock_event = event
+    global mode_1_event, device
+    mode_1_event = event
     device = dev
 
 
@@ -33,17 +33,15 @@ def display_time():
     sleeper_thread.start()
 
 
-def clock():
+def run():
     display_time()
-    while clock_event.is_set():
+    while mode_1_event.is_set():
         if timeout_event.is_set():
-            time.sleep(3)
             timeout_event.clear()
             display_time()
         time.sleep(1)
-    print("clock is over")
 
 
 device = None
-clock_event = None
+mode_1_event = None
 timeout_event = threading.Event()
