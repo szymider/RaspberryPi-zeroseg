@@ -18,12 +18,10 @@ def button_1_listener(source):
     if brightness > 7:
         brightness = 1
     device.brightness(brightness)
-    print("Button 1 pressed")
 
 
 # button which controls current mode
 def button_2_listener(source):
-    print("Button 2 pressed")
     button_event.set()
 
 
@@ -37,7 +35,7 @@ GPIO.setup(BUTTON_2, GPIO.IN)
 GPIO.add_event_detect(BUTTON_1, GPIO.RISING, callback=button_1_listener, bouncetime=200)
 GPIO.add_event_detect(BUTTON_2, GPIO.RISING, callback=button_2_listener, bouncetime=200)
 
-brightness = 3
-device = None
+brightness   = 3
+device       = None
 button_event = None
 

@@ -16,8 +16,8 @@ def sleeper(seconds):
 
 
 def display_time():
-    now = datetime.now()
-    hour = now.hour
+    now    = datetime.now()
+    hour   = now.hour
     minute = now.minute
     second = now.second
 
@@ -42,6 +42,6 @@ def run():
         time.sleep(1)
 
 
-device = None
-mode_1_event = None
+device        = None
+mode_1_event  = None
 timeout_event = threading.Event()

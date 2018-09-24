@@ -24,21 +24,31 @@ def get_temperature():
         temperature = json_object['main']['temp']
     else:
         temperature = None
-        print("Temperature empty")
 
 
-# TODO: how to display minus temperature
 def display_temperature():
     global temperature
     get_temperature()
 
+    # clear temperature display
+    for i in range(5, 9):
+        device.letter(0, i, ' ')
+
     if not (temperature is None):
-        if temperature/10 > 0:
-            device.letter(0, 8, int(temperature / 10))  # Tens
-        device.letter(0, 7, temperature % 10)           # Ones
-        device.letter(0, 6, "*")
+        index = 8
+
+        if temperature < 0:
+            index = 7
+            device.letter(0, 8, '-')
+
+        if abs(temperature)/10 > 0:
+            device.letter(0, index, int(abs(temperature) / 10))    # Tens
+            index -= 1
+
+        device.letter(0, index, int(abs(temperature) % 10))  # Ones
+        device.letter(0, index-1, "*")
     else:
-        device.letter(0, 7, '-')
+        device.letter(0, 8, '-')
 
     sleep_time = 1800
     sleeper_thread = threading.Thread(target=sleeper, name="sleeper", args=(sleep_time,))
@@ -54,7 +64,7 @@ def run():
         time.sleep(1)
 
 
-temperature = None
-device = None
-mode_1_event = None
+temperature   = None
+device        = None
+mode_1_event  = None
 timeout_event = threading.Event()
