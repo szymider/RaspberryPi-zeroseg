@@ -14,7 +14,7 @@ def initialize(dev, btn_event):
 
 # button which controls brightness
 def button_1_listener(source):
-    device.brightness(next(brightness))
+    device.brightness(next(brightness_cycle))
 
 
 # button which controls current mode
@@ -33,7 +33,7 @@ GPIO.add_event_detect(BUTTON_1, GPIO.RISING, callback=button_1_listener, bouncet
 GPIO.add_event_detect(BUTTON_2, GPIO.RISING, callback=button_2_listener, bouncetime=200)
 
 brightness_list  = [5, 7, 1, 3]
-brightness       = cycle(brightness_list)
+brightness_cycle = cycle(brightness_list)
 device           = None
 button_event     = None
 

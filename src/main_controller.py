@@ -6,11 +6,6 @@ import clock
 import temperature
 
 
-def change_mode():
-    global mode
-    mode = next(modes)
-
-
 def run_clock():
     clock_thread = threading.Thread(target=clock.run, name="clock")
     clock_thread.start()
@@ -19,6 +14,19 @@ def run_clock():
 def run_temperature():
     temperature_thread = threading.Thread(target=temperature.run, name="temperature")
     temperature_thread.start()
+
+
+def start_clock_and_temperature():
+    device.clear()
+    mode_1_event.set()
+    run_clock()
+    run_temperature()
+
+
+def start_upcoming_event():
+    mode_1_event.clear()
+    device.clear()
+    device.show_message("HELLO")
 
 
 device = led.sevensegment()
@@ -32,33 +40,28 @@ buttons.initialize(device, button_event)
 clock.initialize(device, mode_1_event)
 temperature.initialize(device, mode_1_event)
 
-mode_list = [1, 2]
-modes = cycle(mode_list)
+mode_list  = [1, 2]
+mode_cycle = cycle(mode_list)
 
-# default is mode 1
-mode = next(modes)
-mode_1_event.set()
-run_clock()
-run_temperature()
+modes = {
+    1: start_clock_and_temperature,
+    2: start_upcoming_event
+}
+
+# default mode is 1
+current_mode = next(mode_cycle)
+start_clock_and_temperature()
 
 """
 * Available modes:
 * #1 clock and temperature
-* #2 display text
+* #2 upcoming events
 """
 
 while True:
     button_event.wait()
-    change_mode()
 
-    if mode == 1:
-        device.clear()
-        mode_1_event.set()
-        run_clock()
-        run_temperature()
-    elif mode == 2:
-        mode_1_event.clear()
-        device.clear()
-        device.show_message("HELLO")
+    current_mode = next(mode_cycle)
+    modes[current_mode]()
 
     button_event.clear()
