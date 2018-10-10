@@ -50,7 +50,7 @@ def display_temperature():
     else:
         device.letter(0, 8, '-')
 
-    sleep_time = 1800
+    sleep_time = 900
     sleeper_thread = threading.Thread(target=sleeper, name="sleeper", args=(sleep_time,))
     sleeper_thread.start()
 
