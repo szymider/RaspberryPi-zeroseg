@@ -6,15 +6,11 @@ import logging
 import datetime
 
 
-def initialize(dev, event):
-    global device, mode_1_event
-    device = dev
+def initialize(dev, event, log):
+    global device, mode_1_event, logger
+    device       = dev
+    logger       = log
     mode_1_event = event
-
-
-def sleeper(seconds):
-    time.sleep(seconds)
-    timeout_event.set()
 
 
 def get_temperature():
@@ -30,7 +26,7 @@ def get_temperature():
 
 
 def display_temperature():
-    global temperature_current, temperature_new
+    global temperature_current, temperature_new, counter
     get_temperature()
     if not (temperature_new is None):
         logger.info('New temperature: ' + str(temperature_new))
@@ -57,35 +53,25 @@ def display_temperature():
         for i in range(5, 8):
             device.letter(0, i, ' ')
 
-    sleep_time = 900
-    sleeper_thread = threading.Thread(target=sleeper, name='sleeper', args=(sleep_time,))
-    sleeper_thread.start()
-
 
 def run():
-    global temperature_current
+    global temperature_current, counter, timeout
     temperature_current = None
-    display_temperature()
+
     while mode_1_event.is_set():
-        if timeout_event.is_set():
-            timeout_event.clear()
+        if counter >= timeout:
             display_temperature()
+            counter = 0
+        counter += 1
         time.sleep(1)
+    counter = timeout
 
-
-# set logger
-now       = datetime.datetime.now()
-log_title = now.strftime('%Y-%m-%d %H:%M')
-logger    = logging.getLogger('myapp')
-handler   = logging.FileHandler('/home/pi/ZeroSeg/apo/logs/%s.log' % log_title)
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-logger.setLevel(logging.INFO)
 
 temperature_current = None
 temperature_new     = None
 device              = None
 mode_1_event        = None
-timeout_event       = threading.Event()
+logger              = None
+timeout             = 900
+counter             = timeout
+

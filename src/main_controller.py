@@ -4,15 +4,17 @@ import threading
 import buttons
 import clock
 import temperature
+import logging
+import datetime
 
 
 def run_clock():
-    clock_thread = threading.Thread(target=clock.run, name="clock")
+    clock_thread = threading.Thread(target=clock.run, name='clock')
     clock_thread.start()
 
 
 def run_temperature():
-    temperature_thread = threading.Thread(target=temperature.run, name="temperature")
+    temperature_thread = threading.Thread(target=temperature.run, name='temperature')
     temperature_thread.start()
 
 
@@ -29,16 +31,29 @@ def start_upcoming_event():
     device.show_message("HELLO")
 
 
+# set display configuration
 device = led.sevensegment()
 device.brightness(3)
 device.clear()
 
+# set logger
+now       = datetime.datetime.now()
+log_title = now.strftime('%Y-%m-%d %H:%M')
+logger    = logging.getLogger('myapp')
+handler   = logging.FileHandler('/home/pi/ZeroSeg/apo/logs/%s.log' % log_title)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
+# add events
 mode_1_event = threading.Event()
 button_event = threading.Event()
 
+# initialize modes
 buttons.initialize(device, button_event)
 clock.initialize(device, mode_1_event)
-temperature.initialize(device, mode_1_event)
+temperature.initialize(device, mode_1_event, logger)
 
 mode_list  = [1, 2]
 mode_cycle = cycle(mode_list)
