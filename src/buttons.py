@@ -36,4 +36,3 @@ brightness_list  = [5, 7, 1, 3]
 brightness_cycle = cycle(brightness_list)
 device           = None
 button_event     = None
-

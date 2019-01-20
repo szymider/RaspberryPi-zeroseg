@@ -29,7 +29,7 @@ def display_temperature():
     global temperature_current, temperature_new, counter
     get_temperature()
     if not (temperature_new is None):
-        logger.info('New temperature: ' + str(temperature_new))
+        logger.info('New temperature: %s' % temperature_new)
         if temperature_new != temperature_current:
             temperature_current = temperature_new
 
@@ -74,4 +74,3 @@ mode_1_event        = None
 logger              = None
 timeout             = 900
 counter             = timeout
-

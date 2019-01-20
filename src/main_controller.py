@@ -75,8 +75,7 @@ start_clock_and_temperature()
 
 while True:
     button_event.wait()
-
     current_mode = next(mode_cycle)
+    logger.info('Switched to mode: %d' % current_mode)
     modes[current_mode]()
-
     button_event.clear()

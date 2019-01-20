@@ -10,11 +10,6 @@ def initialize(dev, event):
     device = dev
 
 
-def sleeper(seconds):
-    time.sleep(seconds)
-    timeout_event.set()
-
-
 def display_time():
     now    = datetime.now()
     hour   = now.hour
@@ -28,20 +23,23 @@ def display_time():
     device.letter(0, 2, int(minute / 10))  # Tens
     device.letter(0, 1, minute % 10)  # Ones
 
-    sleep_time = 60 - second
-    sleeper_thread = threading.Thread(target=sleeper, name="sleeper", args=(sleep_time,))
-    sleeper_thread.start()
+    global timeout
+    timeout = 60 - second
 
 
 def run():
-    display_time()
+    global counter, timeout
+
     while mode_1_event.is_set():
-        if timeout_event.is_set():
-            timeout_event.clear()
+        if counter >= timeout:
             display_time()
+            counter = 0
+        counter += 1
         time.sleep(1)
+    counter = timeout
 
 
 device        = None
 mode_1_event  = None
-timeout_event = threading.Event()
+timeout       = 60
+counter       = timeout
