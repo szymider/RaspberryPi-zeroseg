@@ -51,18 +51,20 @@ def display_temperature():
                 index -= 1
 
             device.letter(0, index, int(abs(temperature_current) % 10))  # Ones
-            device.letter(0, index-1, "*")
+            device.letter(0, index-1, '*')
     else:
         device.letter(0, 8, '-')
         for i in range(5, 8):
             device.letter(0, i, ' ')
 
     sleep_time = 900
-    sleeper_thread = threading.Thread(target=sleeper, name="sleeper", args=(sleep_time,))
+    sleeper_thread = threading.Thread(target=sleeper, name='sleeper', args=(sleep_time,))
     sleeper_thread.start()
 
 
 def run():
+    global temperature_current
+    temperature_current = None
     display_temperature()
     while mode_1_event.is_set():
         if timeout_event.is_set():
@@ -73,7 +75,7 @@ def run():
 
 # set logger
 now       = datetime.datetime.now()
-log_title = now.strftime("%Y-%m-%d %H:%M")
+log_title = now.strftime('%Y-%m-%d %H:%M')
 logger    = logging.getLogger('myapp')
 handler   = logging.FileHandler('/home/pi/ZeroSeg/apo/logs/%s.log' % log_title)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
