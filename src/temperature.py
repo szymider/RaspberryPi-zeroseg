@@ -3,6 +3,7 @@ import threading
 import requests
 import json
 import logging
+import datetime
 
 
 def initialize(dev, event):
@@ -32,7 +33,7 @@ def display_temperature():
     global temperature_current, temperature_new
     get_temperature()
     if not (temperature_new is None):
-        logger.info('New temp: ' + str(temperature_current))
+        logger.info('New temperature: ' + str(temperature_new))
         if temperature_new != temperature_current:
             temperature_current = temperature_new
 
@@ -70,14 +71,18 @@ def run():
         time.sleep(1)
 
 
-logger = logging.getLogger('myapp')
-hdlr = logging.FileHandler('/home/pi/ZeroSeg/apo/logs/myapp.log')
+# set logger
+now       = datetime.datetime.now()
+log_title = now.strftime("%Y-%m-%d %H:%M")
+logger    = logging.getLogger('myapp')
+handler   = logging.FileHandler('/home/pi/ZeroSeg/apo/logs/%s.log' % log_title)
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr)
+
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-temperature_current = 99
+temperature_current = None
 temperature_new     = None
 device              = None
 mode_1_event        = None
