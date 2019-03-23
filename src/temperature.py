@@ -15,14 +15,18 @@ def initialize(dev, event, log):
 
 def get_temperature():
     global temperature_new
-    response = requests.get('http://api.openweathermap.org/data/2.5/'
-                            'weather?id=3081368&units=metric&appid=97b270e75c4525b3d0e79a2d1b635a2e')
-    if response.status_code == requests.codes.ok:
-        json_object = response.json()
-        temperature_new = int(json_object['main']['temp'])
-    else:
+    try:
+        response = requests.get('http://api.openweathermap.org/data/2.5/'
+                                'weather?id=3081368&units=metric&appid=97b270e75c4525b3d0e79a2d1b635a2e')
+        if response.status_code == requests.codes.ok:
+            json_object = response.json()
+            temperature_new = int(json_object['main']['temp'])
+        else:
+            temperature_new = None
+            logger.error('Invalid response code from openweathermap API')
+    except requests.exceptions.RequestException as exception:
+        logger.error(exception)
         temperature_new = None
-        logger.error('Connection error')
 
 
 def display_temperature():
