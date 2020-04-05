@@ -6,6 +6,7 @@ import clock
 import temperature
 import logging
 import datetime
+import internal_measurements
 
 
 def run_clock():
@@ -19,16 +20,17 @@ def run_temperature():
 
 
 def start_clock_and_temperature():
+    button_event.clear()
     device.clear()
     mode_1_event.set()
     run_clock()
     run_temperature()
 
 
-def start_upcoming_event():
+def start_internal_measurements():
     mode_1_event.clear()
     device.clear()
-    device.show_message("HELLO")
+    internal_measurements.display_temperature()
 
 
 # set display configuration
@@ -54,13 +56,14 @@ button_event = threading.Event()
 buttons.initialize(device, button_event)
 clock.initialize(device, mode_1_event)
 temperature.initialize(device, mode_1_event, logger)
+internal_measurements.initialize(device, logger)
 
 mode_list  = [1, 2]
 mode_cycle = cycle(mode_list)
 
 modes = {
     1: start_clock_and_temperature,
-    2: start_upcoming_event
+    2: start_internal_measurements
 }
 
 # default mode is 1
@@ -70,7 +73,7 @@ start_clock_and_temperature()
 """
 * Available modes:
 * #1 clock and temperature
-* #2 upcoming events
+* #2 internal temperature and humidity
 """
 
 while True:
@@ -78,4 +81,3 @@ while True:
     current_mode = next(mode_cycle)
     logger.info('Switched to mode: %d' % current_mode)
     modes[current_mode]()
-    button_event.clear()
