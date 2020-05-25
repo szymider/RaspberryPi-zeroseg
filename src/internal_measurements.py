@@ -19,6 +19,12 @@ def get_data():
         if response.status_code == requests.codes.ok:
             json_object = response.json()
             timestamp = json_object['Timestamp'].split('.')
+            #timestamp_formatted = datetime.datetime.strptime(timestamp[0], "%Y-%m-%dT%H:%M:%S")
+            #print(timestamp_formatted)
+            #now = datetime.datetime.now()
+            #current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+            #current_timestamp = datetime.datetime.timestamp(current_time)
+            #print(current_timestamp)
             body = json.loads(json_object['Body'])
             temperature = int(body['temperature'])
             humidity = int(body['humidity'])
