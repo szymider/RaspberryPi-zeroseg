@@ -16,8 +16,7 @@ def initialize(dev, event, log):
 def get_temperature():
     global temperature_new
     try:
-        response = requests.get('http://api.openweathermap.org/data/2.5/'
-                                'weather?id=3081368&units=metric&appid=97b270e75c4525b3d0e79a2d1b635a2e')
+        response = requests.get('api.openweathermap.org/data/2.5/weather?q=gniezno&appid=5c4014c79199970216bf8aac570511dd')
         if response.status_code == requests.codes.ok:
             json_object = response.json()
             temperature_new = int(json_object['main']['temp'])
